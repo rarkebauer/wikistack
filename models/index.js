@@ -33,11 +33,19 @@ const Page = db.define('page', {
     },
     status: {
         type: Sequelize.ENUM('open', 'closed')
-    }// ,
+    },
     // date: {
     //     type: Sequelize.DATE,
     //     defaultValue: Sequelize.NOW
     // }
+    // hooks: {
+    //     // beforeCreate: () => {
+    //     //     // Do other stuff
+    //     }
+});
+
+Page.hook('beforeValidate', function(page, options){
+    page.urlTitle = urlTitleConverter(page.title)
 })
 
 const User = db.define('user', {
@@ -59,3 +67,15 @@ module.exports = {
     User: User
 
 };
+
+
+function urlTitleConverter(title){
+    if (title) {
+        // Removes all non-alphanumeric characters from title
+        // And make whitespace underscore
+        return title.replace(/\s+/g, '_').replace(/\W/g, '');
+      } else {
+        // Generates random 5 letter string
+        return Math.random().toString(36).substring(2, 7);
+ }
+}

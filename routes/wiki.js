@@ -9,6 +9,27 @@ router.get('/add', function (req, res, next) {
     res.render('addpage')
 });
 
+    //res.send('hit dynamic route at ' + req.params.urlTitle);
+    router.get('/:urlTitle', function (req, res, next) {
+        
+          Page.findOne({ 
+            where: { 
+              urlTitle: req.params.urlTitle 
+            } 
+          })
+          .then(function(foundPage){
+            //res.send("HERE I AM")  
+            // res.json(foundPage);
+            res.render('wikipage', {
+                page: foundPage
+
+
+            })
+          })
+          .catch(next);
+        
+        });
+
 router.get('/', function (req, res, next) {
     // console.log("testing this?")
     // res.send('got to GET /wiki/')
@@ -27,11 +48,11 @@ router.post('/', function (req, res, next) {
 
       // STUDENT ASSIGNMENT:
   // add definitions for `title` and `content`
-    var urlTitle = urlTitleConverter(req.body.title);
-    console.log(urlTitle);
+   // var urlTitle = urlTitleConverter(req.body.title);
+    //console.log(urlTitle);
   var page = Page.build({
     title: req.body.title,
-    urlTitle: urlTitle,
+    //urlTitle: urlTitle,
     content: req.body.content,
     status: req.body.status
   });
@@ -44,21 +65,26 @@ router.post('/', function (req, res, next) {
   // STUDENT ASSIGNMENT:
   // make sure we only redirect *after* our save is complete!
   // note: `.save` returns a promise or it can take a callback.
-  page.save();
+  var pageProm = page.save();
+  pageProm.then(function(entry){
+
+    var urlTitle = entry.urlTitle
+    console.log(entry, urlTitle)
+
+    res.redirect('/wiki'+ urlTitle)
+  }).catch(function(err){console.log(err)})
+  
+
   user.save();
   // -> after save -> res.redirect('/');
-  res.redirect('/')
 });
 
 router.post('/', function (req, res, next) {
     res.send('got to GET /wiki/add')
 });
 
+// router.get('/:urlTitle', function (req, res, next) {
+//     res.send('hit dynamic route at ' + req.params.urlTitle);
+//   });
 
 module.exports = router
-
-function urlTitleConverter(str){
-    // var urlTitle = req.body.title.split(' ').join('_');
-    // urlTitle = urlTitle[urlTitle.length - 1] === '_' ? urlTitle.slice(0, urlTitle.length - 1) : urlTitle;
-    return str;
-}
