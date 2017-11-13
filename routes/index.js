@@ -2,12 +2,17 @@
 var express = require('express');
 var router = express.Router();
 var model = require('../models');
+var wiki = require('./wiki.js')
+var user = require('./user.js')
 
-module.exports = function makeRouterWithSockets (io) {
 
-router.get('/', function(req, res, next){
-  res.render('index');
-});
+router.use('/wiki', wiki);
 
-  return router;
-}
+router.use('/', function(req, res, next){
+    res.render('index');
+  });
+
+
+
+
+module.exports = router
