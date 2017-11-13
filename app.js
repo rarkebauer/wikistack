@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var morgan = require('morgan');
 var nunjucks = require('nunjucks');
-var makesRouter = require('./routes');
+var routes = require('./routes');
 var fs = require('fs');
 var path = require('path');
 var mime = require('mime');
@@ -22,6 +22,11 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
 app.use(bodyParser.json()); // would be for AJAX requests
 
+
+app.use(express.static(path.join(__dirname, '/public')));
+
+app.use('/', routes)
+
 //sync attempt
 models.User.sync({force: true})
 .then(function () {
@@ -30,9 +35,6 @@ models.User.sync({force: true})
 .then(function() {
  var server = app.listen(1337, function(){
    console.log('listening on port 1337');
-   app.use('/', makesRouter(server))
  });
 })
 .catch(console.error);
-
-app.use(express.static(path.join(__dirname, '/public')));
