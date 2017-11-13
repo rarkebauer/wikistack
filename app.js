@@ -23,15 +23,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
 app.use(bodyParser.json()); // would be for AJAX requests
 
 //sync attempt
-models.User.sync({})
+models.User.sync({force: true})
 .then(function () {
-  return models.Page.sync({})
+ return models.Page.sync({})
 })
 .then(function() {
-  var server = app.listen(1337, function(){
-    console.log('listening on port 1337');
-    app.use('/', makesRouter(server))
-  });
+ var server = app.listen(1337, function(){
+   console.log('listening on port 1337');
+   app.use('/', makesRouter(server))
+ });
 })
 .catch(console.error);
 
