@@ -1,5 +1,7 @@
 var Sequelize = require('sequelize');
-var db = new Sequelize('postgres://localhost:5432/wikistack');
+var db = new Sequelize('postgres://localhost:5432/wikistack', {
+    logging: false //might want to change to true to see what's happening
+});
 
 // const Project = sequelize.define('project', {
 //   title: Sequelize.STRING,
@@ -14,21 +16,41 @@ var db = new Sequelize('postgres://localhost:5432/wikistack');
 
 
 const Page = db.define('page', {
-    title: Sequelize.STRING,
+    title: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     urlTitle: {
-        type: Sequelize.STRING, 
+        type: Sequelize.STRING,
+        allowNull: false,
+        get() {
+            return this.getDataValue('urlTitle');
+        },
         validate: {
             isUrl: true
         }
     },
-    content: Sequelize.TEXT,
-    status: Sequelize.ENUM('open', 'closed')
+    content: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    status: {
+        type: Sequelize.ENUM('open', 'closed')
+    },
+    date: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+    }
 })
 
 const User = db.define('user', {
-    name: Sequelize.STRING, 
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     email: {
-        type: Sequelize.STRING, 
+        type: Sequelize.STRING,
+        allowNull: false,
         validate: {
             isEmail: true
         }
@@ -36,7 +58,7 @@ const User = db.define('user', {
 })
 
 module.exports = {
-    Page: Page, 
+    Page: Page,
     User: User
 
 };
