@@ -4,6 +4,10 @@
   <h3>Pages</h3>
   <hr>
   <ul class="list-unstyled">
+      {% for page in allPages %}
     <!-- PLACEHOLDER LIST OF PAGES -->
+    <li>{{page.title}}</li>
+    <li>{{page.content}}</li>
+      {% endfor %}
   </ul>
 {% endblock %}

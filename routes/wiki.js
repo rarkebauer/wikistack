@@ -6,50 +6,63 @@ var Page = models.Page;
 var User = models.User;
 
 router.get('/add', function (req, res, next) {
-    res.render('addpage')
+  res.render('addpage')
 });
 
-    //res.send('hit dynamic route at ' + req.params.urlTitle);
-    router.get('/:urlTitle', function (req, res, next) {
-        
-          Page.findOne({ 
-            where: { 
-              urlTitle: req.params.urlTitle 
-            } 
-          })
-          .then(function(foundPage){
-            //res.send("HERE I AM")  
-            // res.json(foundPage);
-            res.render('wikipage', {
-                page: foundPage
+//res.send('hit dynamic route at ' + req.params.urlTitle);
+router.get('/:urlTitle', function (req, res, next) {
+
+  Page.findOne({
+    where: {
+      urlTitle: req.params.urlTitle
+    }
+  })
+    .then(function (foundPage) {
+      //res.send("HERE I AM")
+      // res.json(foundPage);
+      res.render('wikipage', {
+        page: foundPage
 
 
-            })
-          })
-          .catch(next);
-        
-        });
+      })
+    })
+    .catch(next);
+
+});
 
 router.get('/', function (req, res, next) {
-    // console.log("testing this?")
-    // res.send('got to GET /wiki/')
-    res.redirect('/')
+  Page.findAll({
+    attributes: ['title', 'content']
+  })
+    .then(function (allPages) {
+     // res.send("HERE I AM")
+     // res.json(foundPage);
+      res.render('index', {
+        page: allPages //object not working yet
+      })
+    })
+    .catch(next);
+
+
 });
+// console.log("testing this?")
+// res.send('got to GET /wiki/')
+
 
 router.post('/', function (req, res, next) {
-    // res.json(req.body);
-    // {
-    //     "name": "asdf",
-    //     "email": "asd",
-    //     "title": "asdf",
-    //      "content": "asdf",
-    //     "status": "asdfads"
-    //     }
+  // res.json(req.body);
+  // {
+  //     "name": "asdf",
+  //     "email": "asd",
+  //     "title": "asdf",
+  //      "content": "asdf",
+  //     "status": "asdfads"
+  //     }
 
-      // STUDENT ASSIGNMENT:
+  // STUDENT ASSIGNMENT:
   // add definitions for `title` and `content`
-   // var urlTitle = urlTitleConverter(req.body.title);
-    //console.log(urlTitle);
+  // var urlTitle = urlTitleConverter(req.body.title);
+  //console.log(urlTitle);
   var page = Page.build({
     title: req.body.title,
     //urlTitle: urlTitle,
@@ -66,21 +79,21 @@ router.post('/', function (req, res, next) {
   // make sure we only redirect *after* our save is complete!
   // note: `.save` returns a promise or it can take a callback.
   var pageProm = page.save();
-  pageProm.then(function(entry){
+  pageProm.then(function (entry) {
 
     var urlTitle = entry.urlTitle
     console.log(entry, urlTitle)
 
-    res.redirect('/wiki'+ urlTitle)
-  }).catch(function(err){console.log(err)})
-  
+    res.redirect('/wiki' + urlTitle)
+  }).catch(function (err) { console.log(err) })
+
 
   user.save();
   // -> after save -> res.redirect('/');
 });
 
 router.post('/', function (req, res, next) {
-    res.send('got to GET /wiki/add')
+  res.send('got to GET /wiki/add')
 });
 
 // router.get('/:urlTitle', function (req, res, next) {
